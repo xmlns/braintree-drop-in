@@ -4,10 +4,23 @@ export default async function checkout(req, res) {
   console.log(req.body);
   const nonceFromTheClient = req.body.paymentMethodNonce;
   const amt = req.body.amount;
-  const customField = req.body.customFieldString;
+  const walletAddress = req.body.walletAddress;
+  const creditCardCVV = req.body.cvv;
+  const address = req.body.billingAddress;
+
   const transaction = gateway.transaction.sale(
     {
       amount: amt,
+      billing: {
+        streetAddress: address.street,
+        postalCode: address.zip,
+      },
+      creditCard: {
+        cvv: creditCardCVV,
+      },
+      customFields: {
+        walletaddress: walletAddress,
+      },
       paymentMethodNonce: nonceFromTheClient,
       options: {
         submitForSettlement: true,
